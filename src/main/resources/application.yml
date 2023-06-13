@@ -1,0 +1,5 @@
+spring:
+  cache:
+    cache-name: "randomCache"
+    caffeine:
+      spec: "expireAfterAccess=10s"
