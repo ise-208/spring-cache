@@ -13,6 +13,11 @@ public class SpringCacheController {
 
     @GetMapping("/hello")
     public String hello() {
-        return springCacheService.randomCache().toString();
+        return springCacheService.randomCacheableCache().toString();
+    }
+
+    @GetMapping("/hello2")
+    public String hello2() {
+        return springCacheService.randomLoadCache().toString();
     }
 }
