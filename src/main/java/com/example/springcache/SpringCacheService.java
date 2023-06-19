@@ -1,5 +1,6 @@
 package com.example.springcache;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import org.springframework.cache.annotation.Cacheable;
@@ -10,8 +11,9 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class SpringCacheService {
+    final private Emp emp;
 
-    private final LoadingCache<String, Integer> c = Caffeine
+    private final LoadingCache<String, Integer> c1 = Caffeine
             .newBuilder()
             .expireAfterWrite(10, TimeUnit.SECONDS)
             .recordStats()
@@ -24,6 +26,16 @@ public class SpringCacheService {
                 return new Random().nextInt(100);
             });
 
+    private final Cache<String, Emp> c2 = Caffeine
+            .newBuilder()
+            .expireAfterWrite(10, TimeUnit.SECONDS)
+            .recordStats()
+            .build();
+
+    public SpringCacheService(Emp emp) {
+        this.emp = emp;
+    }
+
     @Cacheable("randomCache")
     public Integer randomCacheableCache() {
         Random random = new Random();
@@ -31,6 +43,13 @@ public class SpringCacheService {
     }
 
     public Integer randomLoadCache() {
-        return c.get("key");
+        return c1.get("key");
+    }
+
+    public Integer randomLoadCache2() {
+        c2.get("key",f -> {
+            return null;
+        });
+        return c1.get("key");
     }
 }
