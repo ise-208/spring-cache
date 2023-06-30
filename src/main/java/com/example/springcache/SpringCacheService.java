@@ -11,7 +11,12 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class SpringCacheService {
-    final private Emp emp;
+    private Emp emp;
+
+    public SpringCacheService(Emp emp) {
+        this.emp = emp;
+    }
+
 
     private final LoadingCache<String, Integer> c1 = Caffeine
             .newBuilder()
@@ -32,12 +37,15 @@ public class SpringCacheService {
             .recordStats()
             .build();
 
-    public SpringCacheService(Emp emp) {
-        this.emp = emp;
-    }
 
     @Cacheable("randomCache")
     public Integer randomCacheableCache() {
+        Random random = new Random();
+        return random.nextInt(100);
+    }
+
+    @Cacheable(value = "randomCache", condition = "#cacheables.contains")
+    public Integer randomCacheableCacheCondition() {
         Random random = new Random();
         return random.nextInt(100);
     }
